@@ -1,0 +1,61 @@
+# for training sr branch:
+# 1. set train_cms as False, use_pretrained_cms as True
+# 2. set the input_size, cms_path
+
+# for testing
+# set the cms_path, sr_path, input_size, target & ref_modality
+# set cms_only, test_dataset_root, subfolder in test
+
+# set use_pretrained_cms as True if you want to load from cms_path only
+
+exp_name: "fast_sr"
+input_nc: 1
+output_size: 256
+input_size: 64
+dim_restormer: 48
+strength: "no"
+target_modality: 'pdfs'
+ref_modality: 'pd'
+dataset_roots:
+  - 'data2/knee_dicom'
+#  - 'data/BraTSReg_Training_Data_v3/brats22'
+#  - 'data/IXI_processed/ixi'
+train_sub_folder: 'train'
+vali_sub_folder: 'vali'
+
+train_cms: False
+use_pretrained_cms: True
+use_proj_gan: True
+
+
+batch_size: 1
+val_batch_size: 1
+workers: 1
+val_workers: 1
+learning_rate: 0.0001
+optim_name: 'ranger'
+
+percep_lambda: 0.8
+l2_lambda: 0.0
+l1_lambda: 1.0
+adv_lambda: 0.01
+fea_lambda: 10.0
+msssim_lambda: 1.0
+ws_lambda: 1.0
+
+cms_path: 'your path'
+sr_path: null
+dis_path: null
+
+max_steps: 600000
+image_interval: 5000
+board_interval: 1000
+val_interval: 5000
+save_interval: 5000
+
+test:
+  cms_only: False
+  test_dataset_root: 'data2/knee_dicom'
+  sub_folder: 'test'
+
+
