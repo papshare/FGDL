@@ -38,7 +38,7 @@ optim_name: 'ranger'
 percep_lambda: 0.8
 l2_lambda: 0.0
 l1_lambda: 1.0
-adv_lambda: 0.01
+adv_lambda: 0.0001
 fea_lambda: 10.0
 msssim_lambda: 1.0
 ws_lambda: 1.0
