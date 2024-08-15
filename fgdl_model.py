@@ -28,7 +28,7 @@ from utils.ranger import Ranger
 import time
 from pytorch_msssim import MS_SSIM
 from archs.main_arch import CompositeModel, Discriminator, DiffProjDiscriminator2
-from mpmath import mp
+# from mpmath import mp
 
 
 class FGDL:
@@ -126,7 +126,7 @@ class FGDL:
 				rs_cms, features_cms, tar_a, deformation = self.model.forward_cms(ref, tar_na)
 				self.D_infty = tar_a - rs_cms
 
-				if self.global_step % d_iter == 0 and self.config['adv_lambda'] > 1e-6:
+				if self.global_step % d_iter == 0 and self.global_step > 200000:
 					# update discriminator
 					self.requires_grad(self.dis, True)
 					self.requires_grad(self.dis2, True)
@@ -218,7 +218,7 @@ class FGDL:
 				rs_sr, rs_cms, features, features_cms, fea_cos_dist, tar_a = self.model.forward(lr, ref, tar_na)  # todo
 				self.D_infty = tar_a - rs_cms
 
-				if self.global_step % d_iter == 0 and self.config['adv_lambda'] > 1e-6:
+				if self.global_step % d_iter == 0 and self.global_step > 200000:
 					# update discriminator
 					self.requires_grad(self.dis, True)
 					self.requires_grad(self.model, False)
@@ -443,11 +443,11 @@ class FGDL:
 		if self.config['msssim_lambda'] > 0:
 			loss_hr_msssim = 1-self.msssim((hr+1.0)/2.0, (y+1.0)/2.0)
 			loss += loss_hr_msssim * self.config['msssim_lambda']
-			loss_rec = loss
+			loss_rec = loss.clone()
 		if self.config['percep_lambda'] > 0:
 			loss_percep = self.percep_loss(hr, y)
 			loss += loss_percep * self.config['percep_lambda']
-		if self.config['adv_lambda'] > 1e-6:
+		if self.config['adv_lambda'] > 0 and self.global_step > 200000:
 			adv_loss = 0.0
 			if self.config['use_proj_gan']:
 				feat_fake, fake_dis, feat_real, real_dis = self.discriminate(self.D_infty, hr, y)
@@ -470,7 +470,7 @@ class FGDL:
 				real_dis = self.dis(y)
 				valid = torch.ones(real_dis.shape, requires_grad=False).cuda()
 				adv_loss = self.GANLoss(fake_dis - real_dis.mean(0, keepdim=True), valid)
-			loss += adv_loss * self.config['adv_lambda'] * self.adjust(self.config['ws_lambda'], self.global_step)
+			loss += adv_loss * self.config['adv_lambda']
 		return loss, loss_rec
 
 	def save_checkpoint(self, loss_dict, is_best):
@@ -567,9 +567,9 @@ class FGDL:
 
 		print(f"Number of test samples: {len(test_dataset)}")
 		return test_dataset
-
-	def adjust(self, ws, global_step):
-		return float(mp.exp(-ws*(global_step**2)))
+	#
+	# def adjust(self, ws, global_step):
+	# 	return float(mp.exp(-ws*(global_step**2)))
 	def requires_grad(self, model, flag=True):
 		for p in model.parameters():
 			p.requires_grad = flag
