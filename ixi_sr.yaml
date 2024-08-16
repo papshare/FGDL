@@ -20,6 +20,8 @@ dataset_roots:
 #  - 'data2/knee_dicom'
 #  - 'data/BraTSReg_Training_Data_v3/brats22'
   - 'data/IXI_processed/ixi'
+train_sub_folder: 'train'
+vali_sub_folder: 'vali'
 
 train_cms: False
 use_pretrained_cms: True
