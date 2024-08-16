@@ -68,7 +68,7 @@ def fastmri_denoise(data_dir, modality):
     # rename the HR dir as HR_original
     os.rename(f'{data_dir}/{modality}/HR', f'{data_dir}/{modality}/HR_original')
     os.makedirs(f'{data_dir}/{modality}/HR')
-    pths = glob.glob(f'{data_dir}/{modality}/HR/*.png')
+    pths = glob.glob(f'{data_dir}/{modality}/HR_original/*.png')
     for pth in pths:
         img = cv2.imread(pth)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
