@@ -21,6 +21,9 @@ dataset_roots:
 #  - 'BraTSReg_Training_Data_v3/brats22'
   - 'IXI_processed/ixi'
 
+train_sub_folder: 'train'
+vali_sub_folder: 'vali'
+
 train_cms: True
 use_pretrained_cms: False
 use_proj_gan: True
