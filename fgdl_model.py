@@ -126,7 +126,7 @@ class FGDL:
 				rs_cms, features_cms, tar_a, deformation = self.model.forward_cms(ref, tar_na)
 				self.D_infty = tar_a - rs_cms
 
-				if self.global_step % d_iter == 0 and self.global_step > 200000:
+				if self.global_step % d_iter == 0 and self.global_step > self.config['ws_lambda']*200000:
 					# update discriminator
 					self.requires_grad(self.dis, True)
 					self.requires_grad(self.dis2, True)
@@ -218,7 +218,7 @@ class FGDL:
 				rs_sr, rs_cms, features, features_cms, fea_cos_dist, tar_a = self.model.forward(lr, ref, tar_na)  # todo
 				self.D_infty = tar_a - rs_cms
 
-				if self.global_step % d_iter == 0 and self.global_step > 200000:
+				if self.global_step % d_iter == 0 and self.global_step > self.config['ws_lambda']*200000:
 					# update discriminator
 					self.requires_grad(self.dis, True)
 					self.requires_grad(self.model, False)
@@ -447,7 +447,7 @@ class FGDL:
 		if self.config['percep_lambda'] > 0:
 			loss_percep = self.percep_loss(hr, y)
 			loss += loss_percep * self.config['percep_lambda']
-		if self.config['adv_lambda'] > 0 and self.global_step > 200000:
+		if self.config['adv_lambda'] > 0 and self.global_step > self.config['ws_lambda']*200000:
 			adv_loss = 0.0
 			if self.config['use_proj_gan']:
 				feat_fake, fake_dis, feat_real, real_dis = self.discriminate(self.D_infty, hr, y)
@@ -525,7 +525,6 @@ class FGDL:
 			    source_transform=tfs,
 			    target_transform=tfs
 			))
-		
 			val_datasets.append(MCSRDataset(
 				lr_root=None if self.config['train_cms'] else os.path.join(dataset_root, self.config['vali_sub_folder'], target_dir, f'LR{k}x'),
 			    ref_root=os.path.join(dataset_root, self.config['vali_sub_folder'], rm, 'HR'),
@@ -563,7 +562,6 @@ class FGDL:
 			    source_transform=tfs,
 			    target_transform=tfs
 			)
-
 
 		print(f"Number of test samples: {len(test_dataset)}")
 		return test_dataset
