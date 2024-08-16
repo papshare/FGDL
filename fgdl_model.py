@@ -525,7 +525,7 @@ class FGDL:
 			    source_transform=tfs,
 			    target_transform=tfs
 			))
-			# todo  change 'vali_fast' to 'vali'
+		
 			val_datasets.append(MCSRDataset(
 				lr_root=None if self.config['train_cms'] else os.path.join(dataset_root, self.config['vali_sub_folder'], target_dir, f'LR{k}x'),
 			    ref_root=os.path.join(dataset_root, self.config['vali_sub_folder'], rm, 'HR'),
@@ -563,7 +563,7 @@ class FGDL:
 			    source_transform=tfs,
 			    target_transform=tfs
 			)
-		# todo chage vali_fast to test
+
 
 		print(f"Number of test samples: {len(test_dataset)}")
 		return test_dataset
